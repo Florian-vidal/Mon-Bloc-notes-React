@@ -1,6 +1,6 @@
 // Ce commposant est utilisé pour afficher l'en-tête de l'application
 import styles from "./Header.module.css";
-import reactLogo from "../../assets/react.svg";
+import reactLogo from "../../assets/logo.webp";
 
 export const Header = () => {
   return (
@@ -9,13 +9,12 @@ export const Header = () => {
         <div className={styles.titleContainer}>
           <img src={reactLogo} alt="logo" width={50} height={50} />
           <div>
-            <h1>TaskList</h1>
+            <h1>Mon Bloc-notes React</h1>
             <div className="color-gray">
-              <code>Si vous aimez faire des listes comme moi !</code>
+              <code>Petit projet React d'une To Do List dynamique !</code>
             </div>
           </div>
         </div>
-        <code className="color-primary">v.1.0</code>
       </div>
     </>
   );
