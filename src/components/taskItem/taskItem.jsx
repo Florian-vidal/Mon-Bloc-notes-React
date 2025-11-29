@@ -1,39 +1,52 @@
-// Ce composant est utilisé pour afficher une tâche
-
 import styles from "./TaskItem.module.css";
 
+// Ce composant est utilisé pour afficher une tâche
 export const TaskItem = ({ task, editTask, deleteTask }) => {
   return (
     <>
+      {/* Élément de liste représentant une tâche */}
       <li
         className={`${styles.container} ${
+          // Applique un style différent selon l'état de complétion de la tâche
           task?.isCompleted ? styles.success : styles.default
         }`}
+        // Au clic sur la tâche, bascule son état de complétion
         onClick={() => editTask(task.id, !task.isCompleted)}
       >
+        {/* Conteneur pour le contenu principal de la tâche */}
         <div className={styles.item}>
+          {/* Badge affichant l'ID de la tâche */}
           <div
             className={`${styles.id} ${
+              // Style différent pour l'ID selon l'état de complétion
               task?.isCompleted ? styles.idSuccess : styles.idDefault
             }`}
           >
             {task.id}
           </div>
+          {/* Titre de la tâche */}
           <div
             className={
+              // Style différent pour le titre selon l'état de complétion
+              // (barré si complétée)
               task?.isCompleted ? styles.contentSuccess : styles.contentDefault
             }
           >
             {task.title}
           </div>
         </div>
+        {/* Bouton de suppression de la tâche */}
         <button
           className="button-primary"
           onClick={(event) => {
+            // Empêche la propagation de l'événement au <li> parent
+            // pour éviter de basculer l'état de complétion lors du clic sur le bouton
             event.stopPropagation();
+            // Appelle la fonction deleteTask avec l'ID de la tâche
             deleteTask(task.id);
           }}
         >
+          {/* Icône SVG de poubelle pour la suppression */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
