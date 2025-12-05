@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Footer } from "./footer/footer";
 import { Header } from "./header/header";
 import { TaskInput } from "./taskInput/taskInput";
@@ -8,6 +8,26 @@ import { TaskList } from "./taskList/taskList";
 export const TaskContanier = () => {
   // État global contenant la liste de toutes les tâches
   const [tasksList, setTasksList] = useState([]);
+
+  // Hook sui charge les tâches sauvegardées depuis localStorage au montage du composant
+  useEffect(() => {
+    // Récupère les tâches stockées dans le localStorage sous la clé "tasksList"
+    const storedTasks = localStorage.getItem("tasksList");
+
+    // Si des tâches existent dans le localStorage, on met à jour l'état tasksList
+    if (storedTasks) {
+      // JSON.parse convertit la string en tableau d'objets JavaScript
+      setTasksList(JSON.parse(storedTasks));
+    }
+    // Le tableau de dépendances vide signifie que cet effet s'exécute uniquement au montage du composant
+  }, []);
+
+  // Sauvegarde la liste des tâches dans le localStorage
+  const savedTasksToLocalStorage = (task) => {
+    // JSON.stringify convertit le tableau d'objets en string
+    // localStorage.setItem enregistre les données sous la clé "tasksList"
+    localStorage.setItem("tasksList", JSON.stringify(task));
+  };
 
   // Ajoute une nouvelle tâche à la liste
   const addTask = (title) => {
@@ -19,24 +39,34 @@ export const TaskContanier = () => {
       isCompleted: false, // Par défaut, une nouvelle tâche n'est pas complétée
     };
     // Ajoute la nouvelle tâche à la liste existante
-    setTasksList([...tasksList, newTask]);
+    const updatedTasks = [...tasksList, newTask];
+    setTasksList(updatedTasks);
+    savedTasksToLocalStorage(updatedTasks);
   };
 
   // Modifie l'état de complétion d'une tâche existante
   const editTask = (id, completedValue) => {
     // Met à jour la liste en modifiant uniquement la tâche correspondante
-    setTasksList(
-      tasksList.map((task) => {
-        // Si l'ID correspond, met à jour la propriété isCompleted, sinon retourne la tâche inchangée
-        return task.id === id ? { ...task, isCompleted: completedValue } : task;
-      })
-    );
+    const updatedTasks = tasksList.map((task) => {
+      // Si l'ID correspond, met à jour la propriété isCompleted, sinon retourne la tâche inchangée
+      return task.id === id ? { ...task, isCompleted: completedValue } : task;
+    });
+
+    // Met à jour l'état tasksList avec la liste modifiée
+    setTasksList(updatedTasks);
+    // Sauvegarde la liste mise à jour dans le localStorage pour persister les modifications
+    savedTasksToLocalStorage(updatedTasks);
   };
 
   // Supprime une tâche de la liste
   const deleteTask = (id) => {
     // Filtre la liste pour exclure la tâche avec l'ID correspondant
-    setTasksList(tasksList.filter((task) => task.id !== id));
+    const updatedTasks = tasksList.filter((task) => task.id !== id);
+
+    // Met à jour l'état tasksList avec la liste filtrée (sans la tâche supprimée)
+    setTasksList(updatedTasks);
+    // Sauvegarde la liste mise à jour dans le localStorage pour persister la suppression
+    savedTasksToLocalStorage(updatedTasks);
   };
 
   // Calcule et retourne le nombre de tâches complétées et non complétées
